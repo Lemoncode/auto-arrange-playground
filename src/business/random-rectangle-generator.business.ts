@@ -1,6 +1,11 @@
 import { Box, Size } from "../model";
 import { getRandomInt, isOverlapping } from "./canvas.utils";
 
+export const generateRandomSize = (maxItemSize: Size): Size => ({
+  width: getRandomInt(30, maxItemSize.width),
+  height: getRandomInt(30, maxItemSize.height),
+});
+
 const generateRandomBox = (
   existingBoxes: Box[],
   maxItemSize: Size,
@@ -9,11 +14,10 @@ const generateRandomBox = (
   let newBox: Box;
   let attempts = 0;
   do {
-    const width = getRandomInt(30, maxItemSize.width);
-    const height = getRandomInt(30, maxItemSize.height);
+    const { width, height } = generateRandomSize(maxItemSize);
     const x = getRandomInt(0, canvasSize.width - width);
     const y = getRandomInt(0, canvasSize.height - height);
-    newBox = { x, y, width, height };
+    newBox = { x, y, width, height, color: "blue" };
     attempts++;
   } while (
     existingBoxes.some((existingBox) => isOverlapping(newBox, existingBox)) &&

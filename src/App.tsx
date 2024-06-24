@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { canvasWidth, canvasHeight } from "./core";
+import { canvasWidth, canvasHeight, maxItemSize } from "./core";
 import { Box } from "./model";
-import { generateRandomBoxes } from "./business/random-rectangle-generator.business";
+import {
+  generateRandomBoxes,
+  generateRandomSize,
+} from "./business/random-rectangle-generator.business";
 import { findFreePosition } from "./business/spot-finder.business";
 
 function App() {
@@ -10,20 +13,18 @@ function App() {
 
   const generateNewScenario = () => {
     setBoxes(
-      generateRandomBoxes(
-        20,
-        { width: 200, height: 300 },
-        { width: canvasWidth, height: canvasHeight }
-      )
+      generateRandomBoxes(20, maxItemSize, {
+        width: canvasWidth,
+        height: canvasHeight,
+      })
     );
   };
 
   const addNewBox = () => {
-    const newBox = findFreePosition(
-      boxes,
-      { width: 50, height: 50 },
-      { width: canvasWidth, height: canvasHeight }
-    );
+    const newBox = findFreePosition(boxes, generateRandomSize(maxItemSize), {
+      width: canvasWidth,
+      height: canvasHeight,
+    });
 
     setBoxes((prevBoxes) => (newBox ? [...prevBoxes, newBox] : prevBoxes));
 
@@ -53,7 +54,7 @@ function App() {
             y={box.y}
             width={box.width}
             height={box.height}
-            fill="blue"
+            fill={box.color}
           />
         ))}
       </svg>

@@ -36,7 +36,15 @@ export function findFreePosition(
   const centerY = Math.floor(canvasSize.height / 2);
 
   for (const [x, y] of spiralPositions(centerX, centerY, canvasSize)) {
-    const newBox = { x, y, width: newBoxSize.width, height: newBoxSize.height };
+    const newBox = {
+      x,
+      y,
+      width: newBoxSize.width,
+      height: newBoxSize.height,
+      // TODO: we will remove this once we get rid of the poc
+      // and integrate this into the main app
+      color: "orange",
+    };
     if (
       x >= 0 &&
       y >= 0 &&
