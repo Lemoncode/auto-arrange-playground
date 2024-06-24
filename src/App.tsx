@@ -6,7 +6,7 @@ import {
   generateRandomBoxes,
   generateRandomSize,
 } from "./business/random-rectangle-generator.business";
-import { findFreePosition } from "./business/spot-finder.business";
+import { findFreePositionOrMinCollision } from "./business/spot-finder.business";
 
 function App() {
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -21,10 +21,14 @@ function App() {
   };
 
   const addNewBox = () => {
-    const newBox = findFreePosition(boxes, generateRandomSize(maxItemSize), {
-      width: canvasWidth,
-      height: canvasHeight,
-    });
+    const newBox = findFreePositionOrMinCollision(
+      boxes,
+      generateRandomSize(maxItemSize),
+      {
+        width: canvasWidth,
+        height: canvasHeight,
+      }
+    );
 
     setBoxes((prevBoxes) => (newBox ? [...prevBoxes, newBox] : prevBoxes));
 
@@ -54,6 +58,7 @@ function App() {
             y={box.y}
             width={box.width}
             height={box.height}
+            stroke="black"
             fill={box.color}
           />
         ))}

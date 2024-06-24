@@ -1,5 +1,5 @@
 import { Box, Size } from "../model";
-import { isOverlapping } from "./canvas.utils";
+import { calculateCollisionArea, isOverlapping } from "./canvas.utils";
 
 function* spiralPositions(
   centerX: number,
@@ -54,6 +54,60 @@ export function findFreePosition(
     ) {
       return newBox;
     }
+  }
+  // TODO: if no free position is found, return a random one
+  return null;
+}
+
+export function findFreePositionOrMinCollision(
+  boxes: Box[],
+  newBoxSize: Size,
+  canvasSize: Size
+): Box | null {
+  const centerX = Math.floor(canvasSize.width / 2);
+  const centerY = Math.floor(canvasSize.height / 2);
+  let minCollisionBox: Box | null = null;
+  let minCollisionArea = Infinity;
+
+  for (const [x, y] of spiralPositions(centerX, centerY, canvasSize)) {
+    const newBox = {
+      x,
+      y,
+      width: newBoxSize.width,
+      height: newBoxSize.height,
+      // TODO: we will remove this once we get rid of the poc
+      // and integrate this into the main app
+      color: "orange",
+    };
+    if (
+      x >= 0 &&
+      y >= 0 &&
+      x + newBoxSize.width <= canvasSize.width &&
+      y + newBoxSize.height <= canvasSize.height
+    ) {
+      let collisionArea = 0;
+      let isFree = true;
+
+      for (const existingBox of boxes) {
+        if (isOverlapping(newBox, existingBox)) {
+          isFree = false;
+          collisionArea += calculateCollisionArea(newBox, existingBox);
+        }
+      }
+
+      if (isFree) {
+        return newBox;
+      }
+
+      if (collisionArea < minCollisionArea) {
+        minCollisionArea = collisionArea;
+        minCollisionBox = newBox;
+      }
+    }
+  }
+
+  if (minCollisionBox !== null) {
+    return minCollisionBox;
   }
   // TODO: if no free position is found, return a random one
   return null;
