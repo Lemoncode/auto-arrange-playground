@@ -27,38 +27,6 @@ function* spiralPositions(
   }
 }
 
-export function findFreePosition(
-  boxes: Box[],
-  newBoxSize: Size,
-  canvasSize: Size
-): Box | null {
-  const centerX = Math.floor(canvasSize.width / 2);
-  const centerY = Math.floor(canvasSize.height / 2);
-
-  for (const [x, y] of spiralPositions(centerX, centerY, canvasSize)) {
-    const newBox = {
-      x,
-      y,
-      width: newBoxSize.width,
-      height: newBoxSize.height,
-      // TODO: we will remove this once we get rid of the poc
-      // and integrate this into the main app
-      color: "orange",
-    };
-    if (
-      x >= 0 &&
-      y >= 0 &&
-      x + newBoxSize.width <= canvasSize.width &&
-      y + newBoxSize.height <= canvasSize.height &&
-      !boxes.some((existingBox) => isOverlapping(newBox, existingBox))
-    ) {
-      return newBox;
-    }
-  }
-  // TODO: if no free position is found, return a random one
-  return null;
-}
-
 export function findFreePositionOrMinCollision(
   boxes: Box[],
   newBoxSize: Size,
